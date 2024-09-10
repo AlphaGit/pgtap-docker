@@ -1,13 +1,9 @@
-# postgres used only for the psql client
-FROM postgres:latest
+FROM alpine:latest
+RUN apk --no-cache add postgresql16-client curl make perl
 
-RUN apt-get update && \
-    apt-get install -y perl curl make && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN curl -L https://cpanmin.us | perl - App::cpanminus
-RUN cpanm TAP::Parser::SourceHandler::pgTAP
+RUN curl -L https://cpanmin.us/ -o cpanm
+RUN chmod +x cpanm
+RUN ./cpanm -n --no-wget --curl TAP::Parser::SourceHandler::pgTAP
 
 COPY ./tests/ /tests/
 WORKDIR /tests
