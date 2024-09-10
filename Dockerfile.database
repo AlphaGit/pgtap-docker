@@ -1,0 +1,12 @@
+FROM postgres:latest
+
+RUN apt-get update && \
+    apt-get install -y git make && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 https://github.com/theory/pgtap.git /pgtap
+RUN cd /pgtap && make && make install
+
+COPY ./database/ /docker-entrypoint-initdb.d/
+
